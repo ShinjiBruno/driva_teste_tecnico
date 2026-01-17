@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ApiEnrichmentSeed {
+  id             String   @id @default(uuid())
+  id_workspace   String
+  workspace_name String
+  total_contacts Int
+  contact_type   String   // "PERSON", "COMPANY"
+  status         String   // "PROCESSING", "COMPLETED", "FAILED", "CANCELED"
+  created_at     DateTime
+  updated_at     DateTime
+
+  @@map("api_enrichments_seed")
+}
+
+model BronzeEnrichment {
+  id             String   @id
+  id_workspace   String
+  workspace_name String
+  total_contacts Int
+  contact_type   String
+  status         String
+  created_at     DateTime
+  updated_at     DateTime
+  
+  dw_ingested_at DateTime @default(now()) 
+  dw_updated_at  DateTime @updatedAt
+
+  @@map("bronze_enrichments")
+}
+
+model GoldEnrichment {
+  id_enriquecimento             String   @id
+  id_workspace                 String   
+  nome_workspace               String   
+  total_contatos               Int      
+  tipo_contato                 String   
+  status_processamento         String   
+  data_criacao                 DateTime 
+  data_atualizacao             DateTime 
+  
+  duracao_processamento_minutos Float    
+  tempo_por_contato_minutos    Float    
+  processamento_sucesso        Boolean  
+  categoria_tamanho_job        String   
+  necessita_reprocessamento    Boolean  
+  
+  data_atualizacao_dw          DateTime @default(now())
+
+  @@map("gold_enrichments")
+}

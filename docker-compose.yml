@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: driva_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user_driva
+      POSTGRES_PASSWORD: password_driva
+      POSTGRES_DB: driva_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: driva_n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=driva_db
+      - DB_POSTGRESDB_USER=user_driva
+      - DB_POSTGRESDB_PASSWORD=password_driva
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+
+  api:
+    build: ./api
+    container_name: driva_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://user_driva:password_driva@postgres:5432/driva_db
+      API_KEY: driva_test_key_abc123xyz789
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend
+    container_name: driva_frontend
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  n8n_data:
