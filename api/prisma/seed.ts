@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
-async function main() {
+export async function seedData() {
   await prisma.apiEnrichmentSeed.deleteMany();
 
   const statusOptions = ["PROCESSING", "COMPLETED", "FAILED", "CANCELED"];
@@ -36,6 +36,10 @@ async function main() {
   await prisma.apiEnrichmentSeed.createMany({
     data: enrichments,
   });
+}
+
+async function main() {
+  await seedData();
 }
 
 main()

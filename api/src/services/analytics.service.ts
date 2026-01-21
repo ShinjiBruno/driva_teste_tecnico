@@ -27,7 +27,7 @@ export const getDashboardOverview = async () => {
   };
 };
 
-export const getEnrichmentsList = async (page: number, limit: number) => {
+export const getEnrichmentsList = async (page: number, limit: number, filters?: {status_processamento?: string, nome_workspace?: string} ) => {
   const skip = (page - 1) * limit;
 
   const [items, totalItems] = await prisma.$transaction([
@@ -35,8 +35,17 @@ export const getEnrichmentsList = async (page: number, limit: number) => {
       skip,
       take: limit,
       orderBy: { data_criacao: 'desc' },
+      where: {
+        ...(filters?.status_processamento && { status_processamento: filters.status_processamento.toUpperCase() }),
+        ...(filters?.nome_workspace && { nome_workspace:{contains: filters.nome_workspace, mode: 'insensitive'} }),
+      },
     }),
-    prisma.goldEnrichment.count(),
+    prisma.goldEnrichment.count({
+      where: {
+        ...(filters?.status_processamento && { status_processamento: filters.status_processamento.toUpperCase() }),
+        ...(filters?.nome_workspace && { nome_workspace: { contains: filters.nome_workspace, mode: 'insensitive' } }),
+      },
+    }),
   ]);
 
   return {

@@ -10,7 +10,6 @@ app.get('/people/v1/enrichments', authMiddleware, async (req, res) => {
   try {
     const page = parseInt(req.query.page as string) || 1; 
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100); 
-
     const result = await getEnrichmentsFromSource(page, limit);
     return res.json(result);
   } catch (error: any) {
@@ -32,8 +31,13 @@ app.get('/people/v1/enrichments', authMiddleware, async (req, res) => {
     try{
         const page = parseInt(req.query.page as string) || 1;
         const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
-        
-        const result = await getEnrichmentsList(page, limit);
+        const status_processamento = (req.query.status || req.query.status_processamento) as string | undefined;
+        const nome_workspace = (req.query.workspace || req.query.nome_workspace) as string | undefined;
+
+        const filters = {status_processamento, nome_workspace};
+        console.log("filters: ", filters)
+
+        const result = await getEnrichmentsList(page, limit, filters);
         return res.json(result);
     }catch{
         return res.status(500).json({ error: 'Erro interno' });

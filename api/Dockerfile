@@ -1,5 +1,7 @@
 FROM node:20-bookworm-slim AS deps
 
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -10,6 +12,8 @@ RUN npm run prisma:generate
 
 
 FROM node:20-bookworm-slim AS runner
+
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 ENV NODE_ENV=production
