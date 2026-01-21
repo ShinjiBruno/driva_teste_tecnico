@@ -28,7 +28,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT * FROM bronze_enrichments \nWHERE (created_at, id) > ('{{ $json.lastCreatedAt }}', '{{ $json.lastId }}')\n  ORDER BY id \n  LIMIT {{ $json.limit }};",
+        "query": "SELECT * FROM bronze_enrichments \n  ORDER BY id \n  LIMIT {{ $json.limit }}\n  OFFSET {{ $json.offset }}",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -59,7 +59,7 @@
             {
               "id": "fa40f062-5380-470a-a77c-8a4b0bb1ac0b",
               "name": "offset",
-              "value": 0,
+              "value": "={{ $json.offset ?? 0 }}",
               "type": "number"
             },
             {
@@ -71,13 +71,13 @@
             {
               "id": "9ed3d8b4-9811-4126-a10c-112067eddf19",
               "name": "lastCreatedAt",
-              "value": "=1977-01-01T00:00:00.000Z",
+              "value": "={{ $json.lastCreatedAt ?? \"1977-01-01T00:00:00.000Z\"}}",
               "type": "string"
             },
             {
               "id": "362d990a-95dd-4772-9c14-611f8a8d28c9",
               "name": "lastId",
-              "value": "a",
+              "value": "={{ $json.lastId ?? \"a\" }}",
               "type": "string"
             }
           ]
@@ -87,7 +87,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        512,
+        624,
         0
       ],
       "id": "bdc5e238-a6f9-44e3-9885-47f094640401",
@@ -130,7 +130,7 @@
               "rightValue": "={{ $json.total }}",
               "operator": {
                 "type": "number",
-                "operation": "lt"
+                "operation": "lte"
               }
             }
           ],
@@ -147,6 +147,40 @@
       "id": "25e67604-1996-4829-8d9d-f4cd0b5586da",
       "name": "If",
       "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst last = $input.last().json;\nreturn [{\n  json: {\n    lastCreatedAt: last.created_at,\n    lastId: last.id,\n    limit: $('Edit Fields').first().json.limit,\n    offset: $('Edit Fields').first().json.offset + $('Edit Fields').first().json.limit,\n    total: $('Edit Fields').first().json.total\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        48
+      ],
+      "id": "dd56dcb4-e91d-4a34-805a-a22b805da198",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT count(*) as total FROM gold_enrichments;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        304,
+        240
+      ],
+      "id": "20fba221-6821-4b00-b591-f2ea1fd4d7a7",
+      "name": "Execute a SQL query2",
+      "credentials": {
+        "postgres": {
+          "id": "HHwbeXXxuu47yzGm",
+          "name": "Postgres account"
+        }
+      }
     },
     {
       "parameters": {
@@ -331,19 +365,6 @@
           "name": "Postgres account"
         }
       }
-    },
-    {
-      "parameters": {
-        "jsCode": "if ($input.all().length === 0) {\n  return [];\n}\n\nconst last = $input.all()[$input.all().length - 1].json;\n\nreturn [{\n  json: {\n    lastCreatedAt: last.created_at,\n    lastId: last.id,\n    limit: $('Edit Fields').first().json.limit,\n    offset: $('Edit Fields').first().json.offset + $('Edit Fields').first().json.limit,\n    total: $('Edit Fields').first().json.total\n  }\n}];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1296,
-        32
-      ],
-      "id": "dd56dcb4-e91d-4a34-805a-a22b805da198",
-      "name": "Code in JavaScript2"
     }
   ],
   "pinData": {},
@@ -412,16 +433,11 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
         ],
-        []
-      ]
-    },
-    "Insert or update rows in a table": {
-      "main": [
         []
       ]
     },
@@ -435,6 +451,11 @@
           }
         ]
       ]
+    },
+    "Insert or update rows in a table": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
@@ -442,7 +463,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "11edff11-6b46-4a4c-9745-b085e8f12923",
+  "versionId": "99339680-96e8-400b-acd5-0533e960e025",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "4eb7a78b5edb10977172c11993b69ee178a3cd1d11db1f527c1a918ab6b79e5d"
