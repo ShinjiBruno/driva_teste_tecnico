@@ -17,25 +17,11 @@
         0,
         0
       ],
-      "id": "f6d414fc-65e1-46e5-a180-8a69a83e24b8",
+      "id": "2208c457-0914-48e2-bee8-3920b5b0d9cf",
       "name": "Schedule Trigger"
     },
     {
       "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "bFmcGFUxXuCzKbHhJatf3",
-          "mode": "id",
-          "cachedResultUrl": "/workflow/bFmcGFUxXuCzKbHhJatf3"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
         "options": {}
       },
       "type": "n8n-nodes-base.executeWorkflow",
@@ -44,25 +30,11 @@
         208,
         0
       ],
-      "id": "97a81267-32fc-45ee-bb84-365792ed3718",
-      "name": "Call 'ingestao'"
+      "id": "4c62aafd-b6a2-498f-8cb6-ca68406aec53",
+      "name": "Execute \"ingestao\""
     },
     {
       "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "Jt_096ZGgJnr9CEDfSAS-",
-          "mode": "id",
-          "cachedResultUrl": "/workflow/Jt_096ZGgJnr9CEDfSAS-"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
         "options": {}
       },
       "type": "n8n-nodes-base.executeWorkflow",
@@ -71,8 +43,8 @@
         416,
         0
       ],
-      "id": "25cc551a-3a5f-4bf7-9455-9690b2ad1686",
-      "name": "Call 'processamento'"
+      "id": "33774949-a448-416f-89eb-768034d211eb",
+      "name": "Execute \"processamento\""
     }
   ],
   "pinData": {},
@@ -81,18 +53,18 @@
       "main": [
         [
           {
-            "node": "Call 'ingestao'",
+            "node": "Execute \"ingestao\"",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Call 'ingestao'": {
+    "Execute \"ingestao\"": {
       "main": [
         [
           {
-            "node": "Call 'processamento'",
+            "node": "Execute \"processamento\"",
             "type": "main",
             "index": 0
           }
@@ -100,18 +72,15 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": false,
-    "timeSavedMode": "fixed",
-    "callerPolicy": "workflowsFromSameOwner",
-    "timezone": "America/Sao_Paulo"
+    "availableInMCP": false
   },
-  "versionId": "adeaf28d-4394-4eb4-89de-fff65ee892a4",
+  "versionId": "da317949-55e7-434e-95e6-c48c8a943cd3",
   "meta": {
-    "instanceId": "4eb7a78b5edb10977172c11993b69ee178a3cd1d11db1f527c1a918ab6b79e5d"
+    "instanceId": "b51029d64ed19ead6676539712ec0402002c54b54ab1a4e433ad796dc470c439"
   },
-  "id": "4Uc6452UtXHxCXCxbE6Bo",
+  "id": "zP3N07pvKp_xRwuq4iI5b",
   "tags": []
 }
