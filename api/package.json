@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "npx prisma migrate deploy && tsx prisma/check-and-seed.ts && tsx src/app.ts",
+    "start": "tsx prisma/check-and-seed.ts && tsx src/app.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",

@@ -22,11 +22,9 @@ COPY --from=deps /app/package.json /app/package-lock.json ./
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
 COPY src ./src
-COPY docker-entrypoint.sh ./
 
-RUN chmod +x docker-entrypoint.sh
 RUN npm prune --omit=dev
 
 EXPOSE 3000
 
-CMD ["./docker-entrypoint.sh"]
+CMD ["npm", "run", "start"]
